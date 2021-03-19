@@ -19,7 +19,21 @@ npm install -g extract-gtfs-pathways
 ## Usage
 
 ```
-todo
+Usage:
+    extract-gtfs-pathways <path-to-pathways-file> <path-to-stops-file> <output-directory>
+Options:
+Examples:
+    extract-gtfs-pathways data/gtfs/shapes.txt data/gtfs/stops.txt pathways
+Notes:
+    This tool will read a reduced form of stops.txt into memory.
+
+    stops.txt needs to be sorted by
+    1. parent_station: lexically ascending, empty first
+    2. location_type: numerically descending, empty first
+    You can use Miller (https://miller.readthedocs.io/) and the
+    Unix tool sponge to do this:
+    mlr --csv sort -f parent_station -nr location_type \
+      stops.txt | sponge stops.txt
 ```
 
 
