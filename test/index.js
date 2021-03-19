@@ -10,23 +10,20 @@ const pwSrc = require.resolve('sample-gtfs-feed/gtfs/pathways.txt')
 const cwd = __dirname
 
 const expected = {
-	// todo
+	'airport': readFileSync(pathJoin(__dirname, 'airport.json'), {encoding: 'utf8'}),
+	'museum': readFileSync(pathJoin(__dirname, 'museum.json'), {encoding: 'utf8'}),
 }
 
 execSync('rm -rf out', {cwd})
 execSync('mkdir out', {cwd})
 
-execSync(`./cli.js '${pwSrc}' '${stopsSrc}' out`, {cwd})
+execSync(`../cli.js '${pwSrc}' '${stopsSrc}' out`, {cwd})
 
-for (const [stationId, features] of Object.entries(expected)) {
+for (const [stationId, expectedContent] of Object.entries(expected)) {
 	const file = `${stationId}.geo.json`
 	const path = pathJoin(cwd, 'out', file)
-	const pw = readFileSync(path, {encoding: 'utf8'})
-
-	eql(pw, JSON.stringify({
-		type: 'FeatureCollection',
-		features: features,
-	}), `${path} is invalid`)
+	const actualContent = readFileSync(path, {encoding: 'utf8'})
+	eql(actualContent, expectedContent, `${path} is invalid`)
 }
 
 console.log('files look correct ✔︎')
