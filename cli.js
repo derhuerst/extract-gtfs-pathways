@@ -37,9 +37,35 @@ if (argv.version || argv.v) {
 	process.exit(0)
 }
 
+const {join: pathJoin} = require('path')
+const readCsv = require('gtfs-utils/read-csv')
+const {writeFile: fsWriteFile} = require('fs/promises')
+const extractGtfsPathways = require('.')
+
 const showError = (err) => {
 	console.error(err)
 	process.exit(1)
 }
 
-// todo
+const pathToPathwaysFile = argv._[0]
+if (!pathToPathwaysFile) {
+	showError('Missing path-to-pathways-file parameter.')
+}
+const pathwaysSrc = readCsv(pathToPathwaysFile)
+
+const pathToStopsFile = argv._[1]
+if (!pathToStopsFile) {
+	showError('Missing path-to-pathways-file parameter.')
+}
+const stopsSrc = readCsv(pathToStopsFile)
+
+const outputDir = argv._[2]
+if (!outputDir) {
+	showError('Missing output-directory parameter.')
+}
+const writeFile = async (stationId, data) => {
+	await fsWriteFile(pathJoin(outputDir, stationId + '.geo.json'), data)
+}
+
+extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile)
+.catch(showError)

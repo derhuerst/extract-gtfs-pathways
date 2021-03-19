@@ -43,7 +43,67 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 		else pws[toStationId] = [encodedPw]
 	}
 
-	// todo: generate GeoJSON
+	for (const stationId in pws) {
+		let data = '{"type": "FeatureCollection", "features": ['
+		let first = true
+		const addFeature = (feature) => {
+			data += (first ? '' : ',') + JSON.stringify(feature) + '\n'
+			first = false
+		}
+
+		const nodesAdded = new Set()
+		const addNode = (nodeId) => {
+			if (nodesAdded.has(nodeId)) return;
+			nodesAdded.add(nodeId)
+
+			addFeature({
+				type: 'Feature',
+				properties: {
+					stop_id: nodeId,
+					stop_name: names[nodeId],
+					// todo: marker-color based on color hash of the id
+				},
+				geometry: {
+					type: 'Point',
+					coordinates: coords[nodeId],
+				},
+			})
+		}
+
+		for (const pw of pws[stationId]) {
+			const from_stop_id = pw[1]
+			addNode(from_stop_id)
+			const to_stop_id = pw[2]
+			addNode(to_stop_id)
+
+			addFeature({
+				type: 'Feature',
+				properties: {
+					pathway_id: pw[0],
+					pathway_mode: pw[3],
+					is_bidirectional: pw[4],
+					length: pw[5],
+					traversal_time: pw[6],
+					stair_count: pw[7],
+					max_slope: pw[8],
+					min_width: pw[9],
+					signposted_as: pw[10],
+					reversed_signposted_as: pw[11],
+				},
+				geometry: {
+					type: 'LineString',
+					coordinates: [
+						coords[from_stop_id],
+						coords[to_stop_id],
+					],
+				},
+			})
+		}
+
+		data += ']}'
+		// todo: write concurrently
+		await writeFile(stationId, data)
+	}
 }
 
 module.exports = extractGtfsPathways
