@@ -1,0 +1,46 @@
+{
+	"name": "extract-gtfs-pathways",
+	"description": "Command-line tool to extract pathways from a GTFS dataset.",
+	"version": "1.0.0",
+	"main": "index.js",
+	"bin": {
+		"extract-gtfs-pathways": "./cli.js"
+	},
+	"files": [
+		"cli.js",
+		"index.js",
+		"example.js"
+	],
+	"keywords": [
+		"gtfs",
+		"general transit feed specification",
+		"pathways",
+		"accessibility",
+		"indoor mapping",
+		"geojson",
+		"public transport",
+		"transit"
+	],
+	"author": "Jannis R <mail@jannisr.de>",
+	"homepage": "https://github.com/derhuerst/extract-gtfs-pathways",
+	"repository": "derhuerst/extract-gtfs-pathways",
+	"bugs": "https://github.com/derhuerst/extract-gtfs-pathways/issues",
+	"license": "ISC",
+	"engines": {
+		"node": ">=14"
+	},
+	"dependencies": {
+		"gtfs-utils": "^3.1.0",
+		"mri": "^1.1.6",
+		"p-queue": "^6.6.2"
+	},
+	"devDependencies": {
+		"eslint": "^7.9.0",
+		"sample-gtfs-feed": "^0.8.0"
+	},
+	"scripts": {
+		"test": "./test/index.js",
+		"lint": "eslint .",
+		"prepublishOnly": "npm run lint && npm test"
+	}
+}
