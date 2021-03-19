@@ -8,6 +8,7 @@ const argv = mri(process.argv.slice(2), {
 	boolean: [
 		'help', 'h',
 		'version', 'v',
+		'quiet', 'q',
 	]
 })
 
@@ -16,6 +17,7 @@ if (argv.help || argv.h) {
 Usage:
     extract-gtfs-pathways <path-to-pathways-file> <path-to-stops-file> <output-directory>
 Options:
+    --quiet          -q  Don't log the written files.
 Examples:
     extract-gtfs-pathways data/gtfs/shapes.txt data/gtfs/stops.txt pathways
 Notes:
@@ -63,8 +65,14 @@ const outputDir = argv._[2]
 if (!outputDir) {
 	showError('Missing output-directory parameter.')
 }
+
+const quiet = !!(argv.quiet || argv.q)
+
+let file = 0
 const writeFile = async (stationId, data) => {
-	await fsWriteFile(pathJoin(outputDir, stationId + '.geo.json'), data)
+	const filename = stationId + '.geo.json'
+	if (!quiet) process.stderr.write(`${++file} ${filename}: ${data.length}b\n`)
+	await fsWriteFile(pathJoin(outputDir, filename), data)
 }
 
 extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile)
