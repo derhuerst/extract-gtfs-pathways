@@ -43,6 +43,46 @@ Notes:
       stops.txt | sponge stops.txt
 ```
 
+### pro tip: color nodes & pathways
+
+If you're using `extract-gtfs-pathways` to render the GeoJSON on a map, you can use `--pathway-props`/`-f` and `--node-props`/`-F` to color the pathways and nodes in a helpful way ([example map](https://geojson.io/#id=gist:derhuerst/4421dab3e3ff907a9908d2abb2972815&map=19/52.54651/13.35904)).
+
+Let's define two functions to compute properties that will be picked up by [geojson.io](https://geojson.io) (because it uses [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) underneath):
+
+```js
+// pathwayProps
+// - 1 (walkway) gray
+// - 2 (stairs) red
+// - 4 (escalator) dark orange
+// - 5 (elevator) blue
+pw => ({
+	stroke: {1: "#95a5a6", 2: "#e74c3c", 4: "#d35400", 5: "#2980b9"}[pw.pathway_mode],
+	"stroke-width": .5,
+})
+
+// nodeProps
+// - 0/empty (stop/platform) turquoise
+// - 2 (entrance/exit) violet
+// - 4 (boarding area) yellow
+n => ({
+	"marker-color": {0: "#16a085", "": "#16a085", 2: "#8e44ad", 4: "#f1c40f"}[n.location_type],
+	"marker-size": "small",
+})
+```
+
+In Bash, we define one variable for each function:
+
+```shell
+pw_props='pw => ({stroke: {1: "#95a5a6", 2: "#e74c3c", 4: "#d35400", 5: "#2980b9"}[pw.pathway_mode], "stroke-width": .5})'
+node_props='n => ({"marker-color": {0: "#16a085", "": "#16a085", 2: "#8e44ad", 4: "#f1c40f"}[n.location_type], "marker-size": "small"})'
+```
+
+Then, we can use them:
+
+```shell
+extract-gtfs-pathways --pathway-props $pw_props --node-props $node_props gtfs/pathways.txt gtfs/stops.txt out
+```
+
 
 ## Contributing
 

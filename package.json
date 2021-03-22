@@ -1,7 +1,7 @@
 {
 	"name": "extract-gtfs-pathways",
 	"description": "Command-line tool to extract pathways from a GTFS dataset.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"main": "index.js",
 	"bin": {
 		"extract-gtfs-pathways": "./cli.js"
@@ -19,7 +19,8 @@
 		"indoor mapping",
 		"geojson",
 		"public transport",
-		"transit"
+		"transit",
+		"cli"
 	],
 	"author": "Jannis R <mail@jannisr.de>",
 	"homepage": "https://github.com/derhuerst/extract-gtfs-pathways",
