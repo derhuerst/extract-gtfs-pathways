@@ -1,13 +1,18 @@
 'use strict'
 
 const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
-	const names = Object.create(null) // stop_name, by stop_id
-	const coords = Object.create(null) // stop_lon,stop_lat, by stop_id
+	const nodes = Object.create(null) // nodes, by stop_id
 	const stations = Object.create(null) // "top-most" parent_station, by stop_id
 
 	for await (const s of stopsSrc) {
-		names[s.stop_id] = s.stop_name || null
-		coords[s.stop_id] = [parseFloat(s.stop_lon), parseFloat(s.stop_lat)]
+		nodes[s.stop_id] = [
+			parseFloat(s.stop_lon),
+			parseFloat(s.stop_lat),
+			s.stop_name || null,
+			s.location_type,
+			s.level_id,
+		]
+
 		// todo: DRY with gtfs-utils/lib/read-stop-stations
 		// stops.txt is sorted so that we get stations first.
 		stations[s.stop_id] = s.parent_station
@@ -56,16 +61,18 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 			if (nodesAdded.has(nodeId)) return;
 			nodesAdded.add(nodeId)
 
+			const n = nodes[nodeId]
 			addFeature({
 				type: 'Feature',
 				properties: {
 					stop_id: nodeId,
-					stop_name: names[nodeId],
-					// todo: marker-color based on color hash of the id
+					stop_name: n[2],
+					location_type: n[3],
+					level_id: n[4],
 				},
 				geometry: {
 					type: 'Point',
-					coordinates: coords[nodeId],
+					coordinates: [n[0], n[1]],
 				},
 			})
 		}
@@ -93,8 +100,8 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 				geometry: {
 					type: 'LineString',
 					coordinates: [
-						coords[from_stop_id],
-						coords[to_stop_id],
+						[nodes[from_stop_id][0], nodes[from_stop_id][1]],
+						[nodes[to_stop_id][0], nodes[to_stop_id][1]],
 					],
 				},
 			})
