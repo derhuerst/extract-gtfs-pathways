@@ -18,6 +18,12 @@ Usage:
     extract-gtfs-pathways <path-to-pathways-file> <path-to-stops-file> <output-directory>
 Options:
     --quiet          -q  Don't log the written files.
+    --pathway-props -f  A JS function to determine additional pathway properties.
+                           Example: pw => ({isWalking: pw.pathway_mode === '1'})
+                           Note: The argument will be eval-ed!
+    --node-props    -F  A JS function to determine additional node properties.
+                           Example: n => ({isFoo: n.stop_id === 'foo'})
+                           Note: The argument will be eval-ed!
 Examples:
     extract-gtfs-pathways data/gtfs/shapes.txt data/gtfs/stops.txt pathways
 Notes:
@@ -68,6 +74,13 @@ if (!outputDir) {
 
 const quiet = !!(argv.quiet || argv.q)
 
+const pathwayProps = argv['pathway-props'] || argv.f
+	? eval(argv['pathway-props'] || argv.f)
+	: () => ({})
+const nodeProps = argv['node-props'] || argv.F
+	? eval(argv['node-props'] || argv.F)
+	: () => ({})
+
 let file = 0
 const writeFile = async (stationId, data) => {
 	const filename = stationId + '.geo.json'
@@ -75,5 +88,8 @@ const writeFile = async (stationId, data) => {
 	await fsWriteFile(pathJoin(outputDir, filename), data)
 }
 
-extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile)
+extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile, {
+	pathwayProps,
+	nodeProps,
+})
 .catch(showError)

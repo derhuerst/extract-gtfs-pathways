@@ -1,6 +1,11 @@
 'use strict'
 
-const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
+const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile, opt = {}) => {
+	const {
+		pathwayProps,
+		nodeProps,
+	} = opt
+
 	const nodes = Object.create(null) // nodes, by stop_id
 	const stations = Object.create(null) // "top-most" parent_station, by stop_id
 
@@ -11,6 +16,7 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 			s.stop_name || null,
 			s.location_type,
 			s.level_id,
+			nodeProps(s),
 		]
 
 		// todo: DRY with gtfs-utils/lib/read-stop-stations
@@ -37,6 +43,7 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 			pw.min_width ? parseFloat(pw.min_width) : undefined,
 			pw.signposted_as || undefined,
 			pw.reversed_signposted_as || undefined,
+			pathwayProps(pw),
 		]
 
 		const fromStationId = stations[pw.from_stop_id]
@@ -69,6 +76,7 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 					stop_name: n[2],
 					location_type: n[3],
 					level_id: n[4],
+					...n[5], // additional props
 				},
 				geometry: {
 					type: 'Point',
@@ -96,6 +104,7 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile) => {
 					min_width: pw[9],
 					signposted_as: pw[10],
 					reversed_signposted_as: pw[11],
+					...pw[12], // additional props
 				},
 				geometry: {
 					type: 'LineString',

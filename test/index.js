@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict'
 
 const {join: pathJoin} = require('path')
 const {execSync} = require('child_process')
@@ -17,7 +18,10 @@ const expected = {
 execSync('rm -rf out', {cwd})
 execSync('mkdir out', {cwd})
 
-execSync(`../cli.js '${pwSrc}' '${stopsSrc}' out`, {cwd})
+const pwProps = pw => ({foo: pw.pathway_mode})
+const nodeProps = n => ({bar: n.stop_id})
+
+execSync(`../cli.js -f '${pwProps}' -F '${nodeProps}' '${pwSrc}' '${stopsSrc}' out`, {cwd})
 
 for (const [stationId, expectedContent] of Object.entries(expected)) {
 	const file = `${stationId}.geo.json`

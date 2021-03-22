@@ -22,6 +22,13 @@ npm install -g extract-gtfs-pathways
 Usage:
     extract-gtfs-pathways <path-to-pathways-file> <path-to-stops-file> <output-directory>
 Options:
+    --quiet          -q  Don't log the written files.
+    --pathway-props -f  A JS function to determine additional pathway properties.
+                           Example: pw => ({isWalking: pw.pathway_mode === '1'})
+                           Note: The argument will be eval-ed!
+    --node-props    -F  A JS function to determine additional node properties.
+                           Example: n => ({isFoo: n.stop_id === 'foo'})
+                           Note: The argument will be eval-ed!
 Examples:
     extract-gtfs-pathways data/gtfs/shapes.txt data/gtfs/stops.txt pathways
 Notes:
