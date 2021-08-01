@@ -37,7 +37,7 @@
 	},
 	"devDependencies": {
 		"eslint": "^7.9.0",
-		"sample-gtfs-feed": "^0.8.0"
+		"sample-gtfs-feed": "^0.10.3"
 	},
 	"scripts": {
 		"test": "./test/index.js",
