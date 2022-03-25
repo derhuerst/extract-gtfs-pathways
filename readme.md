@@ -50,31 +50,32 @@ By default, `extract-gtfs-pathways` adds some style properties to the generated 
 You can use `--pathway-props`/`-f` and `--node-props`/`-F` to customize the pathways' and nodes' properties, respectively. As an example, let's define two functions that override some default properties:
 
 ```js
-// pathwayProps
-// - 1 (walkway) gray
-// - 2 (stairs) red
-// - 4 (escalator) dark orange
-// - 5 (elevator) blue
-pw => ({
-	stroke: {1: "#95a5a6", 2: "#e74c3c", 4: "#d35400", 5: "#2980b9"}[pw.pathway_mode],
-	"stroke-width": .5,
+const WALKWAY = '1'
+const ESCALATOR = '4'
+const pwOpacities = {[WALKWAY]: .3, [ESCALATOR]: 1}
+const pathwayProps = (pw) => ({
+	'line-opacity': pwOpacities[pw.pathway_mode] || .5,
+	'line-width': 2,
 })
 
-// nodeProps
-// - 0/empty (stop/platform) turquoise
-// - 2 (entrance/exit) violet
-// - 4 (boarding area) yellow
-n => ({
-	"marker-color": {0: "#16a085", "": "#16a085", 2: "#8e44ad", 4: "#f1c40f"}[n.location_type],
-	"marker-size": "small",
+const STOP = '0' // or empty
+const ENTRANCE_EXIT = '2'
+const BOARDING_AREA = '4'
+const nodeColors = {
+    [STOP]: '#ff0000', '': '#ff0000',
+    [ENTRANCE_EXIT]: '#00ff00',
+    [BOARDING_AREA]: '#0000ff',
+}
+const nodeProps = (n) => ({
+	'circle-color': nodeColors[n.location_type] || '#444444',
 })
 ```
 
-In Bash, we define one variable for each function:
+We minify the functions and declare them as Bash variables:
 
 ```shell
-pw_props='pw => ({stroke: {1: "#95a5a6", 2: "#e74c3c", 4: "#d35400", 5: "#2980b9"}[pw.pathway_mode], "stroke-width": .5})'
-node_props='n => ({"marker-color": {0: "#16a085", "": "#16a085", 2: "#8e44ad", 4: "#f1c40f"}[n.location_type], "marker-size": "small"})'
+pw_props='pw => ({"line-opacity": {"1": .3, "4": 1}[pw.pathway_mode] || .5, "line-width": 2})'
+node_props='n => ({"circle-color": {"0": "#ff0000", "": "#ff0000", "2": "#00ff00", "4": "#0000ff"}[n.location_type] || "#444444"})'
 ```
 
 Then, we can use them:
