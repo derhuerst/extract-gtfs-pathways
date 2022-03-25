@@ -43,11 +43,11 @@ Notes:
       stops.txt | sponge stops.txt
 ```
 
-### pro tip: color nodes & pathways
+### pro tip: customize color nodes & pathways
 
-If you're using `extract-gtfs-pathways` to render the GeoJSON on a map, you can use `--pathway-props`/`-f` and `--node-props`/`-F` to color the pathways and nodes in a helpful way ([example map](https://geojson.io/#id=gist:derhuerst/4421dab3e3ff907a9908d2abb2972815&map=19/52.54651/13.35904)).
+By default, `extract-gtfs-pathways` adds some style properties to the generated features, following the [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) naming scheme, e.g. `line-color`, `line-width` & `circle-radius`. If you open them with a tool that supports these style properties – e.g. [view-geojson](https://npmjs.com/package/view-geojson), it will be easier to tell the nodes & pathways apart.
 
-Let's define two functions to compute properties that will be picked up by [geojson.io](https://geojson.io) (because it uses [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) underneath):
+You can use `--pathway-props`/`-f` and `--node-props`/`-F` to customize the pathways' and nodes' properties, respectively. As an example, let's define two functions that override some default properties:
 
 ```js
 // pathwayProps
