@@ -59,13 +59,11 @@ const pathToPathwaysFile = argv._[0]
 if (!pathToPathwaysFile) {
 	showError('Missing path-to-pathways-file parameter.')
 }
-const pathwaysSrc = readCsv(pathToPathwaysFile)
 
 const pathToStopsFile = argv._[1]
 if (!pathToStopsFile) {
 	showError('Missing path-to-pathways-file parameter.')
 }
-const stopsSrc = readCsv(pathToStopsFile)
 
 const outputDir = argv._[2]
 if (!outputDir) {
@@ -88,8 +86,13 @@ const writeFile = async (stationId, data) => {
 	await fsWriteFile(pathJoin(outputDir, filename), data)
 }
 
-extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile, {
-	pathwayProps,
-	nodeProps,
-})
+;(async () => {
+	const pathwaysSrc = await readCsv(pathToPathwaysFile)
+	const stopsSrc = await readCsv(pathToStopsFile)
+
+	extractGtfsPathways(stopsSrc, pathwaysSrc, writeFile, {
+		pathwayProps,
+		nodeProps,
+	})
+})()
 .catch(showError)

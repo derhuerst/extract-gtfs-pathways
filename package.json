@@ -31,7 +31,7 @@
 		"node": ">=16"
 	},
 	"dependencies": {
-		"gtfs-utils": "^3.1.0",
+		"gtfs-utils": "^5.1.0",
 		"mri": "^1.1.6",
 		"p-queue": "^6.6.2"
 	},
