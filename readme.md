@@ -85,6 +85,13 @@ extract-gtfs-pathways --pathway-props $pw_props --node-props $node_props gtfs/pa
 ```
 
 
+## Related
+
+- [view-geojson](https://github.com/finnp/view-geojson) – View an GeoJSON in the browser that has been piped into it.
+- [extract-gtfs-shapes](https://github.com/derhuerst/extract-gtfs-shapes) – Command-line tool to extract shapes from a GTFS dataset.
+- [Awesome GTFS: Frameworks and Libraries](https://github.com/andredarcie/awesome-gtfs#frameworks-and-libraries) – A collection of libraries for working with GTFS.
+
+
 ## Contributing
 
 If you have a question or need support using `extract-gtfs-pathways`, please double-check your code and setup first. If you think you have found a bug or want to propose a feature, use [the issues page](https://github.com/derhuerst/extract-gtfs-pathways/issues).
