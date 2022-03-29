@@ -67,7 +67,11 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile, opt = {}) =
 	const {
 		pathwayProps,
 		nodeProps,
-	} = opt
+		logErrorMsg,
+	} = {
+		logErrorMsg: console.error,
+		...opt,
+	}
 
 	const nodes = Object.create(null) // nodes, by stop_id
 	const stations = Object.create(null) // "top-most" parent_station, by stop_id
@@ -149,11 +153,16 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile, opt = {}) =
 		}
 
 		const nodesAdded = new Set()
-		const addNode = (nodeId) => {
+		const addNode = (nodeId, pathwayId) => {
 			if (nodesAdded.has(nodeId)) return;
+			if (!(nodeId in nodes)) {
+				logErrorMsg(`node ${nodeId} does not exist, used in pathway ${pathwayId}`)
+				return;
+			}
 			nodesAdded.add(nodeId)
 
 			const n = nodes[nodeId]
+			// todo: n might be undefined!
 			addFeature({
 				type: 'Feature',
 				properties: {
@@ -171,15 +180,30 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile, opt = {}) =
 		}
 
 		for (const pw of pws[stationId]) {
-			const from_stop_id = pw[1]
-			addNode(from_stop_id)
-			const to_stop_id = pw[2]
-			addNode(to_stop_id)
+			const [
+				pathway_id,
+				from_stop_id, to_stop_id,
+			] = pw
+			addNode(from_stop_id, pathway_id)
+			addNode(to_stop_id, pathway_id)
+
+			const fromNode = nodes[from_stop_id]
+			if (!fromNode) {
+				logErrorMsg(`invalid from_stop_id "${from_stop_id}" in pathway ${pw[0]}`)
+				continue
+			}
+			const toNode = nodes[to_stop_id]
+			if (!toNode) {
+				logErrorMsg(`invalid to_stop_id "${to_stop_id}" in pathway ${pw[0]}`)
+				continue
+			}
+
+			// todo: some pathways have a length of 0, e.g. elevators -> show them as a point?
 
 			addFeature({
 				type: 'Feature',
 				properties: {
-					pathway_id: pw[0],
+					pathway_id,
 					pathway_mode: pw[3],
 					is_bidirectional: pw[4],
 					length: pw[5],
@@ -194,8 +218,8 @@ const extractGtfsPathways = async (stopsSrc, pathwaysSrc, writeFile, opt = {}) =
 				geometry: {
 					type: 'LineString',
 					coordinates: [
-						[nodes[from_stop_id][0], nodes[from_stop_id][1]],
-						[nodes[to_stop_id][0], nodes[to_stop_id][1]],
+						[fromNode[0], fromNode[1]],
+						[toNode[0], toNode[1]],
 					],
 				},
 			})
