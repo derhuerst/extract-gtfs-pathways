@@ -25,7 +25,8 @@ Options:
                            Example: n => ({isFoo: n.stop_id === 'foo'})
                            Note: The argument will be eval-ed!
 Examples:
-    extract-gtfs-pathways data/gtfs/shapes.txt data/gtfs/stops.txt pathways
+	mkdir extracted-pathways
+    extract-gtfs-pathways data/gtfs/pathways.txt data/gtfs/stops.txt extracted-pathways
 Notes:
     This tool will read a reduced form of stops.txt into memory.
 
