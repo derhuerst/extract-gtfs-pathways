@@ -1,0 +1,42 @@
+name: build & publish Docker image
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['16']
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: setup Node v${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+
+    - run: npm run lint
+    - run: npm test
+
+  build-and-publish:
+    name: build & publish Docker image
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out the repo
+        uses: actions/checkout@v2
+      - name: log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      - name: build Docker image & push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            derhuerst/extract-gtfs-pathways:latest
+            derhuerst/extract-gtfs-pathways:2

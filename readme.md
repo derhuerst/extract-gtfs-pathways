@@ -45,6 +45,21 @@ Notes:
       stops.txt | sponge stops.txt
 ```
 
+### with Docker
+
+You can use the [`derhuerst/extract-gtfs-pathways` Docker image](https://hub.docker.com/r/derhuerst/extract-gtfs-pathways).
+
+Remember to mount (using `-v`) the directory you're passing as `<output-directory>` (see above), otherwise the file will be created within the Docker container's virtual file system (and removed after the extraction has finished).
+
+```shell
+unzip -j gtfs.zip -d gtfs # directory with GTFS input
+mkdir extracted-pathways # output directory
+docker run -it --rm \
+    -v $PWD/gtfs:/gtfs \
+    -v $PWD/extracted-pathways:/extracted-pathways
+    derhuerst/extract-gtfs-pathways /gtfs/pathways.txt /gtfs/stops.txt /extracted-pathways
+```
+
 ### pro tip: customize color nodes & pathways
 
 By default, `extract-gtfs-pathways` adds some style properties to the generated features, following the [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) naming scheme, e.g. `line-color`, `line-width` & `circle-radius`. If you open them with a tool that supports these style properties – e.g. [view-geojson](https://npmjs.com/package/view-geojson), it will be easier to tell the nodes & pathways apart.
