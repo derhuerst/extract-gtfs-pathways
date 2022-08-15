@@ -1,27 +1,48 @@
 #!/usr/bin/env node
 'use strict'
 
-const mri = require('mri')
+const {parseArgs} = require('util')
 const pkg = require('./package.json')
 
-const argv = mri(process.argv.slice(2), {
-	boolean: [
-		'help', 'h',
-		'version', 'v',
-		'quiet', 'q',
-	]
+const {
+	values: flags,
+	positionals: args,
+} = parseArgs({
+	options: {
+		'help': {
+			type: 'boolean',
+			short: 'h',
+		},
+		'version': {
+			type: 'boolean',
+			short: 'v',
+		},
+		'quiet': {
+			type: 'boolean',
+			short: 'q',
+		},
+		'pathway-props': {
+			type: 'string',
+			short: 'f',
+		},
+		'node-props': {
+			type: 'string',
+			short: 'F',
+		},
+	},
+	allowPositionals: true,
 })
 
-if (argv.help || argv.h) {
+if (flags.help) {
 	process.stdout.write(`
 Usage:
     extract-gtfs-pathways <path-to-pathways-file> <path-to-stops-file> <output-directory>
 Options:
     --quiet          -q  Don't log the written files.
-    --pathway-props -f  A JS function to determine additional pathway properties.
+    --pathway-props  -f  A JS function to determine additional pathway properties.
                            Example: pw => ({isWalking: pw.pathway_mode === '1'})
                            Note: The argument will be eval-ed!
-    --node-props    -F  A JS function to determine additional node properties.
+    --node-props     -F  A JS function to determine additional node properties.
                            Example: n => ({isFoo: n.stop_id === 'foo'})
                            Note: The argument will be eval-ed!
 Examples:
@@ -41,7 +62,7 @@ Notes:
 	process.exit(0)
 }
 
-if (argv.version || argv.v) {
+if (flags.version) {
 	process.stdout.write(`extract-gtfs-pathways v${pkg.version}\n`)
 	process.exit(0)
 }
@@ -56,28 +77,28 @@ const showError = (err) => {
 	process.exit(1)
 }
 
-const pathToPathwaysFile = argv._[0]
+const pathToPathwaysFile = args[0]
 if (!pathToPathwaysFile) {
 	showError('Missing path-to-pathways-file parameter.')
 }
 
-const pathToStopsFile = argv._[1]
+const pathToStopsFile = args[1]
 if (!pathToStopsFile) {
 	showError('Missing path-to-pathways-file parameter.')
 }
 
-const outputDir = argv._[2]
+const outputDir = args[2]
 if (!outputDir) {
 	showError('Missing output-directory parameter.')
 }
 
-const quiet = !!(argv.quiet || argv.q)
+const quiet = !!flags.quiet
 
-const pathwayProps = argv['pathway-props'] || argv.f
-	? eval(argv['pathway-props'] || argv.f)
+const pathwayProps = flags['pathway-props']
+	? eval(flags['pathway-props'])
 	: () => ({})
-const nodeProps = argv['node-props'] || argv.F
-	? eval(argv['node-props'] || argv.F)
+const nodeProps = flags['node-props']
+	? eval(flags['node-props'])
 	: () => ({})
 
 let file = 0

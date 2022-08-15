@@ -28,11 +28,10 @@
 	"bugs": "https://github.com/derhuerst/extract-gtfs-pathways/issues",
 	"license": "ISC",
 	"engines": {
-		"node": ">=16"
+		"node": ">=16.17"
 	},
 	"dependencies": {
 		"gtfs-utils": "^5.1.0",
-		"mri": "^1.1.6",
 		"p-queue": "^6.6.2"
 	},
 	"devDependencies": {
