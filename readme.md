@@ -90,15 +90,15 @@ const nodeProps = (n) => ({
 
 We minify the functions and declare them as Bash variables:
 
-```shell
+```bash
 pw_props='pw => ({"line-opacity": {"1": .3, "4": 1}[pw.pathway_mode] || .5, "line-width": 2})'
 node_props='n => ({"circle-color": {"0": "#ff0000", "": "#ff0000", "2": "#00ff00", "4": "#0000ff"}[n.location_type] || "#444444"})'
 ```
 
 Then, we can use them:
 
-```shell
-extract-gtfs-pathways --pathway-props $pw_props --node-props $node_props gtfs/pathways.txt gtfs/stops.txt out
+```bash
+extract-gtfs-pathways --pathway-props "$pw_props" --node-props "$node_props" gtfs/pathways.txt gtfs/stops.txt out
 ```
 
 
