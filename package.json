@@ -31,8 +31,7 @@
 		"node": ">=16.17"
 	},
 	"dependencies": {
-		"gtfs-utils": "^5.1.0",
-		"p-queue": "^6.6.2"
+		"gtfs-utils": "^5.1.0"
 	},
 	"devDependencies": {
 		"eslint": "^8.12.0",

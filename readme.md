@@ -1,6 +1,6 @@
 # extract-gtfs-pathways
 
-Command line tool to **extract [pathways](https://gtfs.org/reference/static#pathwaystxt) from a [GTFS](https://gtfs.org) dataset.**
+Command line tool to **extract [pathways](https://gtfs.org/reference/static#pathwaystxt) as [GeoJSON](https://geojson.org) from a [GTFS](https://gtfs.org) dataset.**
 
 [![npm version](https://img.shields.io/npm/v/extract-gtfs-pathways.svg)](https://www.npmjs.com/package/extract-gtfs-pathways)
 ![ISC-licensed](https://img.shields.io/github/license/derhuerst/extract-gtfs-pathways.svg)
@@ -47,7 +47,7 @@ Notes:
 
 ### with Docker
 
-You can use the [`derhuerst/extract-gtfs-pathways` Docker image](https://hub.docker.com/r/derhuerst/extract-gtfs-pathways).
+You can use the [`docker.io/derhuerst/extract-gtfs-pathways` Docker image](https://hub.docker.com/r/docker.io/derhuerst/extract-gtfs-pathways).
 
 Remember to mount (using `-v`) the directory you're passing as `<output-directory>` (see above), otherwise the file will be created within the Docker container's virtual file system (and removed after the extraction has finished).
 
@@ -57,7 +57,7 @@ mkdir extracted-pathways # output directory
 docker run -it --rm \
     -v $PWD/gtfs:/gtfs \
     -v $PWD/extracted-pathways:/extracted-pathways
-    derhuerst/extract-gtfs-pathways /gtfs/pathways.txt /gtfs/stops.txt /extracted-pathways
+    docker.io/derhuerst/extract-gtfs-pathways /gtfs/pathways.txt /gtfs/stops.txt /extracted-pathways
 ```
 
 ### pro tip: customize color nodes & pathways
