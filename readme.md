@@ -104,6 +104,12 @@ Then, we can use them:
 extract-gtfs-pathways --pathway-props "$pw_props" --node-props "$node_props" gtfs/pathways.txt gtfs/stops.txt out
 ```
 
+Alternatively, we can also use `geojson.io`'s naming scheme:
+
+```bash
+pw_props='pw => ({"stroke-opacity": {"1": .3, "4": .8, "5": 1}[pw.pathway_mode] || .5, "stroke-width": 2})'
+node_props='n => ({"marker-color": {"0": "#ff0000", "": "#ff0000", "2": "#00ff00", "4": "#0000ff"}[n.location_type] || "#444444"})'
+```
 
 ## Related
 
