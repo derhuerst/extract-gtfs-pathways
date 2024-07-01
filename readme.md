@@ -69,7 +69,8 @@ You can use `--pathway-props`/`-f` and `--node-props`/`-F` to customize the path
 ```js
 const WALKWAY = '1'
 const ESCALATOR = '4'
-const pwOpacities = {[WALKWAY]: .3, [ESCALATOR]: 1}
+const ELEVATOR = '5'
+const pwOpacities = {[WALKWAY]: .3, [ESCALATOR]: .8, [ELEVATOR]: 1}
 const pathwayProps = (pw) => ({
 	'line-opacity': pwOpacities[pw.pathway_mode] || .5,
 	'line-width': 2,
@@ -90,8 +91,10 @@ const nodeProps = (n) => ({
 
 We minify the functions and declare them as Bash variables:
 
+todo: make these the default?
+
 ```bash
-pw_props='pw => ({"line-opacity": {"1": .3, "4": 1}[pw.pathway_mode] || .5, "line-width": 2})'
+pw_props='pw => ({"line-opacity": {"1": .3, "4": .8, "5": 1}[pw.pathway_mode] || .5, "line-width": 2})'
 node_props='n => ({"circle-color": {"0": "#ff0000", "": "#ff0000", "2": "#00ff00", "4": "#0000ff"}[n.location_type] || "#444444"})'
 ```
 
